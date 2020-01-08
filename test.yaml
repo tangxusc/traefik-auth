@@ -1,0 +1,143 @@
+#目标服务
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: traefik
+  name: whoami
+  labels:
+    app: whoami
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: whoami
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      containers:
+        - name: whoami
+          image: containous/whoami
+          ports:
+            - name: web
+              containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: whoami
+  namespace: traefik
+spec:
+  ports:
+    - protocol: TCP
+      name: web
+      port: 80
+  selector:
+    app: whoami
+---
+#服务的路由
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: simpleingressroute
+  namespace: traefik
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: PathPrefix(`/whoami`)
+    kind: Rule
+    services:
+    - name: whoami
+      port: 80
+    middlewares:
+    - name: auth
+      namespace: traefik
+    - name: stripprefix
+      namespace: traefik
+---
+#服务的路由
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: auth
+  namespace: traefik
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/auth`)
+      kind: Rule
+      services:
+        - name: auth
+          port: 80
+      middlewares:
+        - name: auth
+          namespace: traefik
+        - name: stripprefix
+          namespace: traefik
+
+
+#平台配置
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: auth
+  namespace: traefik
+spec:
+  forwardAuth:
+    address: http://auth/auth
+    authResponseHeaders:
+      - Uid
+      - Abcd
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: stripprefix
+  namespace: traefik
+spec:
+  stripPrefix:
+    prefixes:
+      - /whoami
+      - /auth
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: traefik
+  name: auth
+  labels:
+    app: auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: auth:v1
+          ports:
+            - name: web
+              containerPort: 9999
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth
+  namespace: traefik
+spec:
+  ports:
+    - protocol: TCP
+      name: web
+      targetPort: 9999
+      port: 80
+  selector:
+    app: auth

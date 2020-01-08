@@ -1,0 +1,12 @@
+### 获取token
+GET http://localhost:9999/token?uid=1000
+Accept: application/json
+
+### 使用token访问
+GET http://localhost:9999/auth
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMDAwIiwiZXhwIjoxNTc4NTQ0MDg2fQ.h2cw8pPWWUh182p9sOuaNJGuP-7BBmKdXgJt_JAAR-I
+
+### 打印header
+GET http://localhost:9999/
+
+###

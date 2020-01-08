@@ -1,0 +1,9 @@
+### 获取token
+GET http://10.106.149.71/auth/token?uid=1000
+Accept: application/json
+
+### 使用token访问whoami服务
+GET http://10.106.149.71/whoami
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMDAwIiwiZXhwIjoxNTc4NTU1NTgxfQ.FjcExOOoKQ7vugq6wZq4v_TQxbwfUE_KLDrPY5fYQ8s
+
+###
