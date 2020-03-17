@@ -187,6 +187,9 @@ spec:
       name: traefik
       labels:
         app: traefik
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9000"
     spec:
       serviceAccountName: traefik
       terminationGracePeriodSeconds: 60
@@ -265,6 +268,8 @@ data:
         address = ":8443"
 
     [providers.kubernetesCRD]
+    [metrics]
+      [metrics.prometheus]
 
 ---
 # Source: traefik/templates/dashboard-hook-ingressroute.yaml

@@ -10,3 +10,7 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMDAwIiwiZXhwIjox
 GET http://localhost:9999/
 
 ###
+GET http://localhost/serviceA
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMDAwIiwiZXhwIjoxNTgxNTYyNzU5fQ.CE1gLQmi_W9eOHDLl5KlTfxbk6amyEPvi4jWp6CqeME
+
+###

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: test
+spec:
+  selector:
+    matchLabels:
+      test: a
+  template:
+    metadata:
+      labels:
+        test: a
+    spec:
+#      restartPolicy: Never
+      containers:
+        - name: test
+          image: ubuntu:latest
+          tty: true
+          imagePullPolicy: IfNotPresent
+          command:
+#            - "ln -s /source/ca.crt /target/ca.crt && cat"
+#            - "cat"
+#            - "cp /source/* /target/ && cat"
+            - "cat"
+#          args:
+#            - "/run.sh"
+          volumeMounts:
+            - mountPath: /target
+              name: target
+            - name: source
+              mountPath: /source
+            - name: run
+              mountPath: /run
+      volumes:
+        - name: target
+          hostPath:
+            path: /home/tangxu/test/
+        - name: source
+          configMap:
+            name: cert
+        - name: run
+          configMap:
+            name: run
+            defaultMode: 0777
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cert
+data:
+  ca.crt: abcd
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: run
+data:
+  run.sh: cp -r /source/* /target/
