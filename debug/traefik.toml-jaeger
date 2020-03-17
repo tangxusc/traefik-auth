@@ -1,0 +1,28 @@
+[global]
+  checkNewVersion = true
+[metrics]
+  [metrics.prometheus]
+
+[api]
+  insecure = true
+  dashboard = true
+  debug = true
+
+[log]
+  level = "WARN"
+
+[accessLog]
+  bufferingSize = 42
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+[providers]
+  [providers.file]
+    directory = "etc/traefik/"
+[tracing]
+  [tracing.jaeger]
+    samplingServerURL = "http://192.168.199.147:5778/sampling"
+    samplingType = "const"
+    samplingParam = 1.0
+    gen128Bit = true
+    localAgentHostPort = "192.168.199.147:6831"

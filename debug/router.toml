@@ -1,0 +1,18 @@
+[http]
+  [http.routers]
+    [http.routers.to-serviceA]
+      rule = "PathPrefix(`/serviceA`)"
+      middlewares = ["auth","stripprefix"]
+      service = "serviceA"
+
+  [http.middlewares]
+    [http.middlewares.auth.forwardAuth]
+      address = "http://192.168.199.147:9999/auth"
+      authResponseHeaders = ["Uid", "abcd"]
+    [http.middlewares.stripprefix.stripPrefix]
+      prefixes = ["/serviceA"]
+
+  [http.services]
+    [http.services.serviceA.loadBalancer]
+      [[http.services.serviceA.loadBalancer.servers]]
+        url = "http://192.168.199.147:9999"

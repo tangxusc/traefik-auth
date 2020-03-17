@@ -1,0 +1,34 @@
+[global]
+  checkNewVersion = true
+[metrics]
+  [metrics.prometheus]
+
+[api]
+  insecure = true
+  dashboard = true
+  debug = true
+
+[log]
+  level = "WARN"
+
+[accessLog]
+  bufferingSize = 42
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+[providers]
+  [providers.file]
+    directory = "etc/traefik/"
+#[tracing]
+#  [tracing.zipkin]
+#    httpEndpoint = "http://192.168.199.147:9411/api/v2/spans"
+#    sameSpan = false
+#    id128Bit = false
+[tracing]
+  [tracing.jaeger]
+#    propagation = "b3"
+    samplingServerURL = "http://192.168.199.147:5778/sampling"
+    samplingType = "const"
+    samplingParam = 1.0
+#    gen128Bit = true
+    localAgentHostPort = "192.168.199.147:6831"

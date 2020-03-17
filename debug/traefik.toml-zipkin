@@ -1,0 +1,23 @@
+[global]
+  checkNewVersion = true
+[metrics]
+  [metrics.prometheus]
+
+[api]
+  insecure = true
+  dashboard = true
+  debug = true
+
+[log]
+  level = "WARN"
+
+[accessLog]
+  bufferingSize = 42
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+[providers]
+  [providers.file]
+    directory = "etc/traefik/"
+[tracing]
+  [tracing.zipkin]

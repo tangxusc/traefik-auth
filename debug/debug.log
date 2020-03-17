@@ -1,0 +1,35 @@
+docker run -it --rm -p 8080:8080 -p 80:80 -v $PWD/traefik.toml:/etc/traefik/traefik.toml -v $PWD/router.toml:/etc/traefik/router.toml traefik:2.1.1
+
+
+docker run -it --rm -p 8080:8080 -p 80:80 -v $PWD/traefik-deploy.toml:/etc/traefik/traefik.toml traefik:2.1.1
+
+docker run -d --name jaeger -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp -p 5778:5778 -p 16686:16686 -p 14268:14268 -p 14250:14250 -p 9411:9411 jaegertracing/all-in-one:1.14
+
+192.168.199.147
+
+
+INFO[0205] key:Abcd,value:[456]
+INFO[0205] key:Uid,value:[1000]                         
+INFO[0205] key:Authorization,value:[eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMDAwIiwiZXhwIjoxNTc4NzMxNDUxfQ.f_BdJppDP7Ilwp9fDIKN2meXXA96iy3QuAvp_LXaPrM] 
+
+INFO[0205] key:X-Forwarded-For,value:[172.17.0.1]       
+INFO[0205] key:X-Forwarded-Host,value:[localhost]  
+INFO[0205] key:X-Forwarded-Port,value:[80]              
+INFO[0205] key:X-Forwarded-Prefix,value:[/serviceA]     
+INFO[0205] key:X-Forwarded-Proto,value:[http]           
+INFO[0205] key:X-Forwarded-Server,value:[f70b22bdbd23]  
+INFO[0205] key:X-Real-Ip,value:[172.17.0.1]             
+
+INFO[0205] key:User-Agent,value:[Apache-HttpClient/4.5.10 (Java/11.0.5)] 
+INFO[0205] key:Accept-Encoding,value:[gzip,deflate]  
+
+INFO[0205] key:X-B3-Spanid,value:[47b062fdab4fc7e6]     
+INFO[0205] key:X-B3-Sampled,value:[1]                   
+INFO[0205] key:X-B3-Parentspanid,value:[6877f239bd7138fd] 
+INFO[0205] key:X-B3-Traceid,value:[5d0bd9ac51ff123814cd8f7ec40d9bae] 
+
+
+---------------
+docker run --rm -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp -p 5778:5778/tcp jaegertracing/jaeger-agent:1.16 --reporter.grpc.host-port=192.168.199.147:14250
+docker run --name oap -p 14250:14250 -p 9411:9411 -d -e SW_RECEIVER_JAEGER_ENABLED=true -e SW_RECEIVER_ZIPKIN_ENABLED=true apache/skywalking-oap-server
+docker run --name oap-ui -d -e SW_OAP_ADDRESS=oap:12800 --link oap:oap apache/skywalking-ui
